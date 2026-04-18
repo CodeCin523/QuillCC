@@ -1,0 +1,16 @@
+{
+    "name": "@quillcc/server",
+    "version": "1.0.0",
+    "type": "module",
+    "scripts": {
+        "dev": "nodemon index.js",
+        "start": "node index.js"
+    },
+    "dependencies": {
+        "cors": "^2.8.6",
+        "express": "^4.18.2"
+    },
+    "devDependencies": {
+        "nodemon": "^3.0.0"
+    }
+}
