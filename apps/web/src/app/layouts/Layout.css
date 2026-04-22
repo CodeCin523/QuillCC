@@ -1,0 +1,10 @@
+#explorer_layout {
+  display: grid;
+  height: 100vh;
+  grid-template-columns: auto 240px 1fr;
+}
+#nav_only_layout {
+  display: grid;
+  height: 100vh;
+  grid-template-columns: auto 1fr;
+}

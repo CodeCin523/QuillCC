@@ -1,0 +1,13 @@
+.bar {
+    display: flex;
+    overflow:hidden;
+}
+
+.bar--h {
+  flex-direction: row;
+    width: 100%;
+}
+.bar--v {
+  flex-direction: column;
+    height: 100%;
+}

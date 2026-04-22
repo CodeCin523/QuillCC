@@ -1,6 +1,6 @@
-import "./icon.css"
+import "./Icon.css"
 
-export default function Icon({
+export  function Icon({
   src,
   size = "medium",
   isSelected = false,
