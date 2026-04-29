@@ -4,20 +4,12 @@ class StorageAdapter {
     throw new Error("Not implemented")
   }
 
-  async getDirectoryByPath(path) {
-    throw new Error("Not implemented")
-  }
-
   async listDirectories(parentId) {
     throw new Error("Not implemented")
   }
 
   // --- Files ---
   async getFileById(id) {
-    throw new Error("Not implemented")
-  }
-
-  async getFileByPath(path) {
     throw new Error("Not implemented")
   }
 
