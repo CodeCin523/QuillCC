@@ -1,13 +1,16 @@
 import { Outlet } from "react-router-dom"
-import { NavBar } from "../components/navigation/NavBar.jsx"
+
+import { ExplorerBar } from "../components/explorer/ExplorerBar";
+import { NavBar } from "../components/navigation/NavBar";
 
 import "./Layout.css"
 
-export function NavOnlyLayout({
+export function WorkspaceLayout({
     children
 }) {
     return (<>
         <NavBar />
+        <ExplorerBar />
         <main>
             {children ? children : <Outlet />}
         </main>
