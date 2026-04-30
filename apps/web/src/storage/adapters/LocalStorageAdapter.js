@@ -1,6 +1,8 @@
+import { createDirectory, assertDirectoryInput, assertDirectoryEntity } from "../../domain/directory.js"
+import { createFile, assertFileInput, assertFileEntity } from "../../domain/file.js"
 import { StorageAdapter } from "../StorageAdapter.js"
 
-const KEY = {
+const KEYS = {
   FILES: "LSA-files",
   DIRECTORIES: "LSA-directories",
   PATH_INDEX: "LSA-pathIndex",
@@ -13,8 +15,8 @@ export class LocalStorageAdaptor extends StorageAdapter {
   }
 
   _nextId() {
-    const sessionId = sessionStorage.getItem(KEY.SESSION_ID) ?? crypto.randomUUID();
-    sessionStorage.setItem(KEY.SESSION_ID, sessionId);
+    const sessionId = sessionStorage.getItem(KEYS.SESSION_ID) ?? crypto.randomUUID();
+    sessionStorage.setItem(KEYS.SESSION_ID, sessionId);
 
     return `${sessionId}-${crypto.randomUUID()}`;
   }
@@ -42,7 +44,23 @@ export class LocalStorageAdaptor extends StorageAdapter {
 
   // --- Directories ---
   async createDirectory(dir) {
-    throw new Error("Not implemented")
+    assertDirectoryInput(dir);
+
+    const _id = this._nextId();
+    const now = new Date();
+
+    const newDir = createDirectory({
+      ...dir,
+      _id,
+      createdAt: now,
+      updatedAt: now,
+    });
+
+    const dirs = this._getDirectories();
+    dirs[_id] = newDir;
+    this._write(KEY.DIRECTORIES, dirs);
+
+    return newDir;
   }
   async deleteDirectory(id) {
     throw new Error("Not implemented")
@@ -61,7 +79,27 @@ export class LocalStorageAdaptor extends StorageAdapter {
 
   // --- Files ---
   async createFile(file) {
-    throw new Error("Not implemented")
+    // validate input (no id, no timestamps)
+    assertFileInput(file);
+
+    // system fields
+    const _id = this._nextId();
+    const now = new Date();
+
+    // build domain entity
+    const newFile = createFile({
+      ...file,
+      _id,
+      createdAt: now,
+      updatedAt: now,
+    });
+
+    // persist
+    const files = this._getFiles();
+    files[_id] = newFile;
+    this._write(KEY.FILES, files);
+
+    return newFile;
   }
   async deleteFile(id) {
     throw new Error("Not implemented")

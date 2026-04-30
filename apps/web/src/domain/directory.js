@@ -1,6 +1,6 @@
 export function createDirectory(data) {
   return {
-    _id: data._id,
+    _id: data._id ?? "",
     name: data.name,
     parentId: data.parentId ?? null,
     createdAt: data.createdAt ?? new Date(),
@@ -8,7 +8,26 @@ export function createDirectory(data) {
   };
 }
 
-export function assertDirectory(obj) {
+export function assertDirectoryInput(obj) {
+  if (!obj || typeof obj !== "object") {
+    throw new Error("Directory input must be an object");
+  }
+
+  if (typeof obj.name !== "string" || obj.name.trim() === "") {
+    throw new Error("Directory.name is required");
+  }
+
+  if (obj.parentId !== null && typeof obj.parentId !== "string") {
+    throw new Error("Directory.parentId must be string or null");
+  }
+
+  // MUST NOT contain system fields
+  if (obj._id) throw new Error("Directory input must NOT include _id");
+  if (obj.createdAt) throw new Error("Directory input must NOT include createdAt");
+  if (obj.updatedAt) throw new Error("Directory input must NOT include updatedAt");
+}
+
+export function assertDirectoryEntity(obj) {
   if (!obj || typeof obj !== "object") {
     throw new Error("Directory must be an object");
   }
@@ -17,7 +36,7 @@ export function assertDirectory(obj) {
 
   for (const key of required) {
     if (!(key in obj)) {
-      throw new Error(`Invalid Directory: missing field "${key}"`);
+      throw new Error(`Directory missing field: ${key}`);
     }
   }
 
@@ -28,11 +47,6 @@ export function assertDirectory(obj) {
     throw new Error("Directory.parentId must be string or null");
   }
 
-  if (isNaN(new Date(obj.createdAt))) {
-    throw new Error("Directory.createdAt is invalid date");
-  }
-
-  if (isNaN(new Date(obj.updatedAt))) {
-    throw new Error("Directory.updatedAt is invalid date");
-  }
+  if (isNaN(new Date(obj.createdAt))) throw new Error("Directory.createdAt invalid");
+  if (isNaN(new Date(obj.updatedAt))) throw new Error("Directory.updatedAt invalid");
 }
