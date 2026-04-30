@@ -40,60 +40,30 @@ export class LocalStorageAdaptor extends StorageAdapter {
     return this._getDirectories()[id] ?? null;
   }
 
-  // NEED TO BE MOVE TO SERVICE
-  _buildIndex() {
-    const dirs = this._getDirectories();
-    const files = this._getFiles();
-
-    const byId = {};
-    const byPath = {};
-
-    const buildPath = (node) => {
-      if (!node.parentId) return `/${node.name}`;
-
-      const parent = byId[node.parentId];
-      return `${buildPath(parent)}/${node.name}`;
-    };
-
-    // 1. Register directories
-    for (const dir of Object.values(dirs)) {
-      byId[dir.id] = { ...dir, children: [] };
-    }
-
-    // 2. Register files
-    for (const file of Object.values(files)) {
-      byId[file.id] = { ...file };
-    }
-
-    // 3. Build paths
-    for (const node of Object.values(byId)) {
-      const path = buildPath(node);
-      byPath[path] = node.id;
-    }
-
-    return { byId, byPath };
-  }
-
   // --- Directories ---
-  async getDirectoryById(id) {
+  async createDirectory(dir) {
+    throw new Error("Not implemented")
+  }
+  async deleteDirectory(id) {
     throw new Error("Not implemented")
   }
 
-  async listDirectories(parentId) {
+  async saveDirectory(dir) {
+    throw new Error("Not implemented")
+  }
+
+  async getDirectory(id) {
+    throw new Error("Not implemented")
+  }
+  async getAllDirectories() {
     throw new Error("Not implemented")
   }
 
   // --- Files ---
-  async getFileById(id) {
+  async createFile(file) {
     throw new Error("Not implemented")
   }
-  
-  async listFiles(parentId) {
-    throw new Error("Not implemented")
-  }
-
-  // --- Mutations ---
-  async saveDirectory(dir) {
+  async deleteFile(id) {
     throw new Error("Not implemented")
   }
 
@@ -101,11 +71,10 @@ export class LocalStorageAdaptor extends StorageAdapter {
     throw new Error("Not implemented")
   }
 
-  async deleteDirectory(id) {
+  async getFile(id) {
     throw new Error("Not implemented")
   }
-
-  async deleteFile(id) {
+  async getAllFiles() {
     throw new Error("Not implemented")
   }
 }

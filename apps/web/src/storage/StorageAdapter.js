@@ -1,24 +1,28 @@
 class StorageAdapter {
   // --- Directories ---
-  async getDirectoryById(id) {
+  async createDirectory(dir) {
+    throw new Error("Not implemented")
+  }
+  async deleteDirectory(id) {
     throw new Error("Not implemented")
   }
 
-  async listDirectories(parentId) {
+  async saveDirectory(dir) {
+    throw new Error("Not implemented")
+  }
+
+  async getDirectory(id) {
+    throw new Error("Not implemented")
+  }
+  async getAllDirectories() {
     throw new Error("Not implemented")
   }
 
   // --- Files ---
-  async getFileById(id) {
+  async createFile(file) {
     throw new Error("Not implemented")
   }
-
-  async listFiles(parentId) {
-    throw new Error("Not implemented")
-  }
-
-  // --- Mutations ---
-  async saveDirectory(dir) {
+  async deleteFile(id) {
     throw new Error("Not implemented")
   }
 
@@ -26,11 +30,10 @@ class StorageAdapter {
     throw new Error("Not implemented")
   }
 
-  async deleteDirectory(id) {
+  async getFile(id) {
     throw new Error("Not implemented")
   }
-
-  async deleteFile(id) {
+  async getAllFiles() {
     throw new Error("Not implemented")
   }
 }

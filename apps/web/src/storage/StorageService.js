@@ -4,15 +4,103 @@ export class StorageService {
   }
 
   // ------------------------
-  // READ (safe wrappers)
+  // PATH TREE
   // ------------------------
 
-  async getFile(id) {
-    return this.adapter.getFileById(id);
+  async buildIndex() {
+    const [dirs, files] = await Promise.all([
+      this.adapter.getAllDirectories(),
+      this.adapter.getAllFiles(),
+    ]);
+
+    const pathById = new Map();
+    const idByPath = new Map();
+
+    const nodes = [...dirs, ...files];
+
+    // build lookup for parent traversal
+    const byId = new Map(nodes.map(n => [n._id, n]));
+
+    const getPath = (node) => {
+      const parts = [];
+      let current = node;
+
+      while (current) {
+        parts.unshift(current.name);
+        current = current.parentId ? byId.get(current.parentId) : null;
+      }
+
+      return "/" + parts.join("/");
+    };
+
+    for (const node of nodes) {
+      const path = getPath(node);
+
+      pathById.set(node._id, path);
+      idByPath.set(path, node._id);
+    }
+
+    this.index = { pathById, idByPath };
   }
 
-  async getDirectory(id) {
-    return this.adapter.getDirectoryById(id);
+  async listDirectories(parentId = null, { recursive = false } = {}) {
+    const dirs = await this.adapter.getAllDirectories();
+
+    const byParent = new Map();
+
+    for (const dir of dirs) {
+      const key = dir.parentId ?? null;
+      if (!byParent.has(key)) byParent.set(key, []);
+      byParent.get(key).push(dir);
+    }
+
+    const result = [];
+
+    const visit = (pid) => {
+      const children = byParent.get(pid) || [];
+
+      for (const child of children) {
+        result.push(child);
+
+        if (recursive) {
+          visit(child._id);
+        }
+      }
+    };
+
+    visit(parentId);
+
+    return result;
+  }
+
+  async listFiles(parentId = null, { recursive = false } = {}) {
+    const files = await this.adapter.getAllFiles();
+  
+    const byParent = new Map();
+  
+    for (const file of files) {
+      const key = file.parentId ?? null;
+      if (!byParent.has(key)) byParent.set(key, []);
+      byParent.get(key).push(file);
+    }
+  
+    const result = [];
+  
+    const visit = (pid) => {
+      const children = byParent.get(pid) || [];
+    
+      for (const child of children) {
+        result.push(child);
+      
+        if (recursive) {
+          visit(child._id);
+        }
+      }
+    };
+  
+    visit(parentId);
+  
+    return result;
   }
 
   // ------------------------
@@ -69,27 +157,5 @@ export class StorageService {
       name: newName,
       updatedAt: Date.now(),
     });
-  }
-
-  // ------------------------
-  // DELETE
-  // ------------------------
-
-  async deleteFile(fileId) {
-    return this.adapter.deleteFile(fileId);
-  }
-
-  async deleteDirectory(dirId) {
-    // NOTE: you may later add recursive delete logic here
-    return this.adapter.deleteDirectory(dirId);
-  }
-
-  // ------------------------
-  // PATH / LOOKUP (future index layer hook)
-  // ------------------------
-
-  async resolvePath(path) {
-    // intentionally NOT implemented yet
-    throw new Error("Not implemented (depends on index layer)");
   }
 }
