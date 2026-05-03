@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
-import { ExplorerBar } from "../components/explorer/ExplorerBar";
+import { TreeExplorer } from "../components/explorer/TreeExplorer";
 // import { SearchBar } from "../components/explorer/SearchBar";
 import { NavBar } from "../components/navigation/NavBar";
 import { StorageProvider } from "../providers/StorageProvider";
@@ -47,7 +47,7 @@ export function WorkspaceLayout({ storageAdapter, children }) {
   return (
     <StorageProvider storageAdapter={storageAdapter}>
       <NavBar navController={workspaceNavController} />
-      {explorerMode === "folder" ? <ExplorerBar /> : null}
+      {explorerMode === "folder" ? <TreeExplorer /> : null}
       <main>{children ? children : <Outlet />}</main>
     </StorageProvider>
   );
