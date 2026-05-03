@@ -11,7 +11,7 @@ const router = createBrowserRouter([
     element: <LocalWorkspace />,
     children: [
       { path: "*" },
-      { path: "files/:fileId" }
+      { path: "files/:fileId" },
     ],
   },
   {
@@ -28,6 +28,6 @@ const router = createBrowserRouter([
   }
 ]);
 
-export  function App() {
+export function App() {
   return <RouterProvider router={router} />;
 }

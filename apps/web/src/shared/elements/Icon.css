@@ -29,3 +29,8 @@
 .icon--selected {
   background-color: var(--color-selected);
 }
+
+/* Button Behaviors */
+.icon_button:active {
+  background-color: red;
+}
