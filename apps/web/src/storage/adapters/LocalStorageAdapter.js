@@ -1,6 +1,6 @@
-import { createDirectory, assertDirectoryInput, assertDirectoryEntity } from "../../domain/directory.js"
-import { createFile, assertFileInput, assertFileEntity } from "../../domain/file.js"
-import { StorageAdapter } from "../StorageAdapter.js"
+import { createDirectory, assertDirectoryInput, assertDirectoryEntity } from "../../domain/directory.js";
+import { createFile, assertFileInput, assertFileEntity } from "../../domain/file.js";
+import { StorageAdapter } from "../StorageAdapter.js";
 
 const KEYS = {
   FILES: "LSA-files",
@@ -9,43 +9,63 @@ const KEYS = {
   SESSION_ID: "LSA-sessionId"
 };
 
-export class LocalStorageAdaptor extends StorageAdapter {
+export class LocalStorageAdapter extends StorageAdapter {
   constructor() {
     super();
   }
 
+  // --- ID generation ---
   _nextId() {
-    const sessionId = sessionStorage.getItem(KEYS.SESSION_ID) ?? crypto.randomUUID();
-    sessionStorage.setItem(KEYS.SESSION_ID, sessionId);
-
+    let sessionId = sessionStorage.getItem(KEYS.SESSION_ID);
+    if (!sessionId) {
+      sessionId = crypto.randomUUID();
+      sessionStorage.setItem(KEYS.SESSION_ID, sessionId);
+    }
     return `${sessionId}-${crypto.randomUUID()}`;
   }
 
+  // --- Internal localStorage helpers ---
   _read(key) {
-    return JSON.parse(localStorage.getItem(key));
+    try {
+      const raw = localStorage.getItem(key);
+      return raw ? JSON.parse(raw) : {};
+    } catch (err) {
+      console.error(`Failed to parse localStorage key "${key}":`, err);
+      return {};
+    }
   }
+
   _write(key, value) {
-    localStorage.setItem(key, JSON.stringify(value));
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+    } catch (err) {
+      console.error(`Failed to write localStorage key "${key}":`, err);
+      throw err;
+    }
   }
 
   _getFiles() {
-    return this._read(KEYS.FILES) ?? {};
+    return this._read(KEYS.FILES);
   }
+
   _getDirectories() {
-    return this._read(KEYS.DIRECTORIES) ?? {};
+    return this._read(KEYS.DIRECTORIES);
   }
 
   _getFile(id) {
-    return this._getFiles()[id] ?? null;
+    const files = this._getFiles();
+    return files[id] ?? null;
   }
+
   _getDirectory(id) {
-    return this._getDirectories()[id] ?? null;
+    const dirs = this._getDirectories();
+    return dirs[id] ?? null;
   }
 
   // --- Directories ---
+
   async createDirectory(dir) {
     assertDirectoryInput(dir);
-
     const _id = this._nextId();
     const now = new Date();
 
@@ -53,66 +73,96 @@ export class LocalStorageAdaptor extends StorageAdapter {
       ...dir,
       _id,
       createdAt: now,
-      updatedAt: now,
+      updatedAt: now
     });
 
     const dirs = this._getDirectories();
     dirs[_id] = newDir;
-    this._write(KEY.DIRECTORIES, dirs);
+    this._write(KEYS.DIRECTORIES, dirs);
 
     return newDir;
   }
-  async deleteDirectory(id) {
-    throw new Error("Not implemented")
-  }
 
   async saveDirectory(dir) {
-    throw new Error("Not implemented")
+    assertDirectoryEntity(dir);
+    const dirs = this._getDirectories();
+    if (!dirs[dir._id]) throw new Error(`Directory with id ${dir._id} does not exist`);
+
+    dir.updatedAt = new Date();
+    dirs[dir._id] = dir;
+    this._write(KEYS.DIRECTORIES, dirs);
+
+    return dir;
+  }
+
+  async deleteDirectory(id) {
+    const dirs = this._getDirectories();
+    if (!dirs[id]) throw new Error(`Directory with id ${id} does not exist`);
+
+    delete dirs[id];
+    this._write(KEYS.DIRECTORIES, dirs);
+
+    return true;
   }
 
   async getDirectory(id) {
-    throw new Error("Not implemented")
+    return this._getDirectory(id);
   }
+
   async getAllDirectories() {
-    throw new Error("Not implemented")
+    const dirs = this._getDirectories();
+    return Object.values(dirs);
   }
 
   // --- Files ---
-  async createFile(file) {
-    // validate input (no id, no timestamps)
-    assertFileInput(file);
 
-    // system fields
+  async createFile(file) {
+    assertFileInput(file);
     const _id = this._nextId();
     const now = new Date();
 
-    // build domain entity
     const newFile = createFile({
       ...file,
       _id,
       createdAt: now,
-      updatedAt: now,
+      updatedAt: now
     });
 
-    // persist
     const files = this._getFiles();
     files[_id] = newFile;
-    this._write(KEY.FILES, files);
+    this._write(KEYS.FILES, files);
 
     return newFile;
   }
-  async deleteFile(id) {
-    throw new Error("Not implemented")
-  }
 
   async saveFile(file) {
-    throw new Error("Not implemented")
+    assertFileEntity(file);
+    const files = this._getFiles();
+    if (!files[file._id]) throw new Error(`File with id ${file._id} does not exist`);
+
+    file.updatedAt = new Date();
+    files[file._id] = file;
+    this._write(KEYS.FILES, files);
+
+    return file;
+  }
+
+  async deleteFile(id) {
+    const files = this._getFiles();
+    if (!files[id]) throw new Error(`File with id ${id} does not exist`);
+
+    delete files[id];
+    this._write(KEYS.FILES, files);
+
+    return true;
   }
 
   async getFile(id) {
-    throw new Error("Not implemented")
+    return this._getFile(id);
   }
+
   async getAllFiles() {
-    throw new Error("Not implemented")
+    const files = this._getFiles();
+    return Object.values(files);
   }
 }

@@ -1,4 +1,4 @@
-class StorageAdapter {
+export class StorageAdapter {
   // --- Directories ---
   async createDirectory(dir) {
     throw new Error("Not implemented")

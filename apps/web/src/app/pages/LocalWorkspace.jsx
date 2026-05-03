@@ -1,10 +1,14 @@
 import { useParams } from "react-router-dom";
 import { WorkspaceLayout } from "../layouts/WorkspaceLayout";
 
-export function LocalWorkspace() {
-    const { fileId } = useParams();
+import { LocalStorageAdapter } from "../../storage/adapters/LocalStorageAdapter.js"
 
-    return <WorkspaceLayout>
-        
-    </WorkspaceLayout>;
+export function LocalWorkspace() {
+  const { fileId } = useParams();
+
+  const adapter = new LocalStorageAdapter();
+
+  return <WorkspaceLayout storageAdapter={adapter}>
+
+  </WorkspaceLayout>;
 }
