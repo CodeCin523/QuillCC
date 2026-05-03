@@ -5,7 +5,8 @@ export function IconButton({
   src,
   size = "medium",
   isSelected = false,
-  onClick,
+  onClick = null,
+  isDisabled = false,
   alt = "",
   className = ""
 }) {
@@ -14,11 +15,12 @@ export function IconButton({
     `icon--${size}`,
     isSelected && "icon--selected",
     "icon_button",
-    className
+    className,
+    isDisabled && "icon_button--disabled",
   ].filter(Boolean).join(" ");
 
   return (
-    <div className={classes} onClick={onClick}>
+    <div className={classes} onClick={() => { if (!isDisabled) onClick() }}>
       <img src={src} alt={alt} />
     </div>
   );

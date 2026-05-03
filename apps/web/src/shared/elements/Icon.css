@@ -16,7 +16,7 @@
 
 /* Sizes */
 .icon--small {
-  width: 16px;
+  width: 18px;
   padding: 2px;
 }
 
@@ -33,4 +33,12 @@
 /* Button Behaviors */
 .icon_button:active {
   background-color: red;
+}
+
+.icon_button--disabled {
+  background-color: aqua;
+}
+
+.icon_button--disabled:active {
+  background-color: aqua;
 }

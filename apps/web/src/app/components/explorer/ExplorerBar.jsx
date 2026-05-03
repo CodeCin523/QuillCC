@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { Icon } from "../../../shared/elements/Icon.jsx";
+import { IconButton } from "../../../shared/elements/IconButton.jsx";
 import { Stack } from "../../../shared/elements/Stack.jsx";
 import { useStorage } from "../../providers/StorageProvider.jsx";
 
 function ExplorerTree({ directories, files, parentId, onSelect, selectedId }) {
   const childDirs = directories.filter((d) => d.parentId === parentId);
-  const childFiles = files.filter((f) => f.directoryId === parentId);
+  const childFiles = files.filter((f) => f.parentId === parentId);
 
   return (
     <div style={{ marginLeft: parentId ? 20 : 0 }}>
@@ -73,6 +73,7 @@ export function ExplorerBar() {
 
         setDirectories(dirs);
         setFiles(fs);
+        console.log(fs);
       } catch (err) {
         console.error("Failed to load storage:", err);
       }
@@ -94,12 +95,12 @@ export function ExplorerBar() {
   }
 
   async function createFile() {
-    const directoryId =
+    const parentId =
       selected?.type === "directory" ? selected.item._id : null;
 
     await storage.adapter.createFile({
       name: "New File",
-      directoryId
+      parentId
     });
 
     refresh();
@@ -120,13 +121,17 @@ export function ExplorerBar() {
 
   return (
     <Stack direction="vertical" style={{ width: "200px", overflowY: "auto" }}>
-      <div>
-        <button onClick={createDirectory}>New Folder</button>
-        <button onClick={createFile}>New File</button>
-        <button onClick={deleteSelected} disabled={!selected}>
-          Delete
-        </button>
-      </div>
+      <Stack direction="horizontal">
+        <IconButton src="/icons/folder-plus.png" size="small" alt=""
+          isSelected={false}
+          onClick={createDirectory} />
+        <IconButton src="/icons/file-plus.png" size="small" alt=""
+          isSelected={false}
+          onClick={createFile} />
+        <IconButton src="/icons/trash.png" size="small" alt=""
+          isSelected={false}
+          onClick={deleteSelected} isDisabled={!selected} />
+      </Stack>
 
       <ExplorerTree
         directories={directories}

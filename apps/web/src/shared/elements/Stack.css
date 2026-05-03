@@ -1,6 +1,6 @@
 .bar {
-    display: inline-flex;
-    overflow:hidden;
+  display: inline-flex;
+  overflow: hidden;
 }
 
 .bar--h {
@@ -8,6 +8,7 @@
   width: 100%;
   height: auto;
 }
+
 .bar--v {
   flex-direction: column;
   width: auto;
