@@ -16,12 +16,12 @@ export class LocalStorageAdapter extends StorageAdapter {
 
   // --- ID generation ---
   _nextId() {
-    let sessionId = sessionStorage.getItem(KEYS.SESSION_ID);
-    if (!sessionId) {
-      sessionId = crypto.randomUUID();
-      sessionStorage.setItem(KEYS.SESSION_ID, sessionId);
-    }
-    return `${sessionId}-${crypto.randomUUID()}`;
+    // let sessionId = sessionStorage.getItem(KEYS.SESSION_ID);
+    // if (!sessionId) {
+    //   sessionId = crypto.randomUUID();
+    //   sessionStorage.setItem(KEYS.SESSION_ID, sessionId);
+    // }
+    return /*`${sessionId}-*/`${crypto.randomUUID()}`;
   }
 
   // --- Internal localStorage helpers ---
@@ -88,8 +88,12 @@ export class LocalStorageAdapter extends StorageAdapter {
     const dirs = this._getDirectories();
     if (!dirs[dir._id]) throw new Error(`Directory with id ${dir._id} does not exist`);
 
-    dir.updatedAt = new Date();
-    dirs[dir._id] = dir;
+    const updatedDir = {
+      ...dir,
+      updatedAt: new Date()
+    };
+
+    dirs[dir._id] = updatedDir;
     this._write(KEYS.DIRECTORIES, dirs);
 
     return dir;
@@ -97,9 +101,30 @@ export class LocalStorageAdapter extends StorageAdapter {
 
   async deleteDirectory(id) {
     const dirs = this._getDirectories();
-    if (!dirs[id]) throw new Error(`Directory with id ${id} does not exist`);
+    const files = this._getFiles();
 
+    if (!dirs[id]) {
+      throw new Error(`Directory with id ${id} does not exist`);
+    }
+
+    // --- Delete child directories recursively ---
+    for (const dir of Object.values(dirs)) {
+      if (dir.parentId === id) {
+        await this.deleteDirectory(dir._id);
+      }
+    }
+
+    // --- Delete child files ---
+    for (const file of Object.values(files)) {
+      if (file.parentId === id) {
+        delete files[file._id];
+      }
+    }
+
+    // --- Delete this directory ---
     delete dirs[id];
+
+    this._write(KEYS.FILES, files);
     this._write(KEYS.DIRECTORIES, dirs);
 
     return true;
@@ -140,11 +165,14 @@ export class LocalStorageAdapter extends StorageAdapter {
     const files = this._getFiles();
     if (!files[file._id]) throw new Error(`File with id ${file._id} does not exist`);
 
-    file.updatedAt = new Date();
-    files[file._id] = file;
+    const updatedFile = {
+      ...file,
+      updatedAt: new Date()
+    };
+    files[file._id] = updatedFile;
     this._write(KEYS.FILES, files);
 
-    return file;
+    return updatedFile;
   }
 
   async deleteFile(id) {

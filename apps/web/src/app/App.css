@@ -2,7 +2,9 @@
   --color-bg: #ffffff;
   --color-surface: #f5f5f5;
   --color-accent: #e0e0e0;
-  --color-selected: #ffe4c4;
+  --color-hover: #2a2d2e;
+--color-selected: #37373d;
+--color-surface: #252526;
   --color-text: #222222;
 }
 

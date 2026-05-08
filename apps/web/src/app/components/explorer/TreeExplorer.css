@@ -1,0 +1,77 @@
+.tree_explorer {
+  width: 260px;
+  height: 100%;
+
+  background: #1e1e1e;
+  color: #e4e4e4;
+
+  border-right: 1px solid #333;
+
+  overflow: hidden;
+}
+
+.explorer_header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+
+  gap: 6px;
+
+  padding: 8px;
+
+  background: #252526;
+  border-bottom: 1px solid #333;
+
+  flex-shrink: 0;
+}
+
+.explorer_body {
+  flex: 1;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  padding: 4px;
+}
+
+.tree_branch {
+  display: flex;
+  flex-direction: column;
+}
+
+.tree_entry {
+  display: flex;
+  align-items: center;
+
+  gap: 6px;
+
+  padding: 4px 8px;
+  margin: 1px 0;
+
+  border-radius: 4px;
+
+  cursor: pointer;
+  user-select: none;
+
+  transition: background 0.15s ease;
+
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.tree_entry:hover {
+  background: #2a2d2e;
+}
+
+.tree_entry.selected {
+  background: #37373d;
+}
+
+.tree-entry-icon {
+  flex-shrink: 0;
+}
+
+.tree-entry-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
