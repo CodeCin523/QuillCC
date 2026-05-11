@@ -9,6 +9,7 @@ import { StorageProvider } from "../providers/StorageProvider";
 import { NavAction } from "../actions/NavAction.js";
 
 import "./Layout.css";
+import "./WorkspaceLayout.css";
 
 export function WorkspaceLayout({ storageAdapter, children }) {
   const [explorerMode, setExplorerMode] = useState("folder"); // "folder" or "search"
@@ -26,7 +27,6 @@ export function WorkspaceLayout({ storageAdapter, children }) {
       }
     },
     dispatch: (navAction) => {
-      console.log("test")
       switch (navAction) {
         case NavAction.FOLDER_EXPLORER:
           setExplorerMode("folder");
@@ -46,9 +46,17 @@ export function WorkspaceLayout({ storageAdapter, children }) {
 
   return (
     <StorageProvider storageAdapter={storageAdapter}>
-      <NavBar navController={workspaceNavController} />
-      {explorerMode === "folder" ? <TreeExplorer /> : null}
-      <main>{children ? children : <Outlet />}</main>
+      <div id="workspace_layout">
+        <NavBar navController={workspaceNavController} />
+
+        {explorerMode === "folder"
+          ? <TreeExplorer />
+          : <div id="explorer_placeholder" />}
+
+        <main>
+          {children ? children : <Outlet />}
+        </main>
+      </div>
     </StorageProvider>
   );
 }

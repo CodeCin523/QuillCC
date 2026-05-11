@@ -51,6 +51,7 @@ export function TreeExplorer() {
         const fs = await storage.adapter.getAllFiles();
 
         setDirectories(dirs);
+        console.log(dirs);
         setFiles(fs);
         console.log(fs);
       } catch (err) {

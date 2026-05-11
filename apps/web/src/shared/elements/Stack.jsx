@@ -1,6 +1,6 @@
 import "./Stack.css"
 
-export  function Stack({
+export function Stack({
   direction = "horizontal",
   gap,
   align = "stretch",
@@ -8,6 +8,7 @@ export  function Stack({
   className,
   style,
   children,
+  id
 }) {
   const dir = direction === "horizontal" ? "bar--h" : "bar--v";
 
@@ -19,7 +20,7 @@ export  function Stack({
   };
 
   return (
-    <div className={`bar ${dir} ${className ?? ""}`} style={mergedStyle}>
+    <div id={id} className={`bar ${dir} ${className ?? ""}`} style={mergedStyle}>
       {children}
     </div>
   );

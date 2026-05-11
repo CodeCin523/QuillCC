@@ -1,11 +1,38 @@
 :root {
+  /* Base colors */
   --color-bg: #ffffff;
   --color-surface: #f5f5f5;
   --color-accent: #e0e0e0;
   --color-hover: #2a2d2e;
---color-selected: #37373d;
---color-surface: #252526;
+  --color-selected: #37373d;
   --color-text: #222222;
+
+  /* Additional colors */
+  --color-bg-dark: #1e1e1e;
+  --color-surface-dark: #252526;
+  --color-text-light: #e4e4e4;
+  --color-border: #333333;
+
+  /* Base */
+  --color-bg: #1e1e1e;
+  --color-surface: #252526;
+  --color-surface-light: #2a2d2e;
+
+  /* Text */
+  --color-text: #e4e4e4;
+  --color-text-muted: #aaaaaa;
+
+  /* States */
+  --color-hover: #2a2d2e;
+  --color-selected: #37373d;
+
+  /* Borders */
+  --color-border: #333333;
+
+  /* Navbar */
+  --navbar-width: 56px;
+  --navbar-padding: 8px;
+  --navbar-gap: 10px;
 }
 
 html,

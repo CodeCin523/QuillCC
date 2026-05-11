@@ -2,6 +2,8 @@ import { IconButton } from "../../../shared/elements/IconButton.jsx";
 import { Stack } from "../../../shared/elements/Stack.jsx";
 import { NavAction } from "../../actions/NavAction.js";
 
+import "./NavBar.css"
+
 export function NavBar({ className, navController }) {
   return (<Stack id="navbar" direction="vertical" class={className}>
     <div id="navbar_file">

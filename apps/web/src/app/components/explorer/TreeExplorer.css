@@ -2,10 +2,10 @@
   width: 260px;
   height: 100%;
 
-  background: #1e1e1e;
-  color: #e4e4e4;
+  background: var(--color-bg-dark);
+  color: var(--color-text-light);
 
-  border-right: 1px solid #333;
+  border-right: 1px solid var(--color-border);
 
   overflow: hidden;
 }
@@ -14,23 +14,19 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
-
   gap: 6px;
-
   padding: 8px;
 
-  background: #252526;
-  border-bottom: 1px solid #333;
+  background: var(--color-surface-dark);
+  border-bottom: 1px solid var(--color-border);
 
   flex-shrink: 0;
 }
 
 .explorer_body {
   flex: 1;
-
   overflow-y: auto;
   overflow-x: hidden;
-
   padding: 4px;
 }
 
@@ -42,29 +38,23 @@
 .tree_entry {
   display: flex;
   align-items: center;
-
   gap: 6px;
-
   padding: 4px 8px;
   margin: 1px 0;
-
   border-radius: 4px;
-
   cursor: pointer;
   user-select: none;
-
   transition: background 0.15s ease;
-
   white-space: nowrap;
   overflow: hidden;
 }
 
 .tree_entry:hover {
-  background: #2a2d2e;
+  background: var(--color-hover);
 }
 
 .tree_entry.selected {
-  background: #37373d;
+  background: var(--color-selected);
 }
 
 .tree-entry-icon {
