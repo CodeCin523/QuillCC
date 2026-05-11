@@ -50,3 +50,14 @@ body,
   place-items: center;
   position: absolute;
 }
+
+@font-face {
+  font-family: 'Cascadia Code';
+  src: url('./fonts/cascadia/CascadiaCode.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+body {
+  font-family: 'Cascadia Code', monospace;
+}
