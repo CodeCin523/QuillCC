@@ -1,19 +1,19 @@
-import { createContext } from "react";
+import { createContext, useContext, useState } from "react";
 
 const WorkspaceContext = createContext({
-  type: "local",
+  type: "",
   explorer: "folder",
   adapter: null,
 });
 
-export function WorkspaceProvider({ type, explorer, adapter, children }) {
+export function WorkspaceProvider({ type = "", explorer = "folder", adapter = null, children }) {
   const [workspace, setWorkspace] = useState({
     type: type,
     explorer: explorer,
     adapter: adapter
   });
 
-  const switchWorkspace = (type, explorer, adapter) => {
+  const switchWorkspace = ({ type, explorer, adapter }) => {
     setWorkspace({
       type: type,
       explorer: explorer,

@@ -3,17 +3,18 @@ import { useNavigate } from "react-router-dom";
 
 import { IconButton } from "../../../shared/elements/IconButton.jsx";
 import { Stack } from "../../../shared/elements/Stack.jsx";
-import { useStorage } from "../../providers/StorageProvider";
 
 import { ExplorerHeader } from "./ExplorerHeader";
 import { TreeBranch } from "./treeEplorer/TreeBranch";
 import { ExplorerBody } from "./ExplorerBody.jsx";
 
 import "./TreeExplorer.css"
+import { useWorkspace } from "../../providers/WorkplaceProvider.jsx";
 
 export function TreeExplorer() {
   // --- All States ---
-  const { storage } = useStorage();
+  const { workspace } = useWorkspace();
+
   const navigate = useNavigate();
 
   const [directories, setDirectories] = useState([]);
@@ -36,7 +37,7 @@ export function TreeExplorer() {
 
   function handleOpenFile(file) {
     const base =
-      storage.adapter.constructor.name === "LocalStorageAdapter"
+      workspace.adapter.constructor.name === "LocalStorageAdapter"
         ? "/local/files"
         : "/remote/files";
 
@@ -45,27 +46,29 @@ export function TreeExplorer() {
 
   // --- Load Files ---
   useEffect(() => {
+    if (!workspace.adapter) return; // Wait until adapter exists
+
     async function fetchData() {
       try {
-        const dirs = await storage.adapter.getAllDirectories();
-        const fs = await storage.adapter.getAllFiles();
+        const dirs = await workspace.adapter.getAllDirectories();
+        const fs = await workspace.adapter.getAllFiles();
 
         setDirectories(dirs);
         setFiles(fs);
       } catch (err) {
-        console.error("Failed to load storage:", err);
+        console.error("Failed to load workspace:", err);
       }
     }
 
     fetchData();
-  }, [storage, refreshKey]);
+  }, [workspace.adapter, refreshKey]); // watch only the adapter and refreshKey
 
   // --- Header's Functions ---
   async function createDirectory() {
     const parentId =
       selected?.type === "directory" ? selected.item._id : null;
 
-    await storage.adapter.createDirectory({
+    await workspace.adapter.createDirectory({
       name: "New Folder",
       parentId
     });
@@ -77,7 +80,7 @@ export function TreeExplorer() {
     const parentId =
       selected?.type === "directory" ? selected.item._id : null;
 
-    await storage.adapter.createFile({
+    await workspace.adapter.createFile({
       name: "New File.md",
       parentId
     });
@@ -93,12 +96,12 @@ export function TreeExplorer() {
     if (!newName?.trim()) return;
 
     if (selected.type === "directory") {
-      await storage.adapter.saveDirectory({
+      await workspace.adapter.saveDirectory({
         ...selected.item,
         name: newName
       });
     } else {
-      await storage.adapter.saveFile({
+      await workspace.adapter.saveFile({
         ...selected.item,
         name: newName
       });
@@ -111,9 +114,9 @@ export function TreeExplorer() {
     if (!selected) return;
 
     if (selected.type === "directory") {
-      await storage.adapter.deleteDirectory(selected.item._id);
+      await workspace.adapter.deleteDirectory(selected.item._id);
     } else {
-      await storage.adapter.deleteFile(selected.item._id);
+      await workspace.adapter.deleteFile(selected.item._id);
     }
 
     setSelected(null);

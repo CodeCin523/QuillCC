@@ -1,5 +1,5 @@
-import { createDirectory, assertDirectoryInput, assertDirectoryEntity } from "../../domain/directory.js";
-import { createFile, assertFileInput, assertFileEntity } from "../../domain/file.js";
+import { createDirectory, assertDirectoryInput, assertDirectoryEntity } from "../domain/directory.js";
+import { createFile, assertFileInput, assertFileEntity } from "../domain/file.js";
 import { StorageAdapter } from "../StorageAdapter.js";
 
 const KEYS = {

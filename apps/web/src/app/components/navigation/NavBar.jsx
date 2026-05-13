@@ -1,29 +1,38 @@
 import { IconButton } from "../../../shared/elements/IconButton.jsx";
 import { Stack } from "../../../shared/elements/Stack.jsx";
-import { NavAction } from "../../actions/NavAction.js";
+import { NavOption } from "../../domain/NavOption.js";
 
-import "./NavBar.css"
+import "./NavBar.css";
 
 export function NavBar({ className, navController }) {
-  return (<Stack id="navbar" direction="vertical" class={className}>
-    <div id="navbar_file">
-      <IconButton src="/icons/menu.png" size="medium" alt=""
-        isSelected={navController.isSelected(NavAction.MENU)}
-        onClick={() => navController.dispatch(NavAction.MENU)} />
-      <IconButton src="/icons/folder.png" size="medium" alt=""
-        isSelected={navController.isSelected(NavAction.FOLDER_EXPLORER)}
-        onClick={() => navController.dispatch(NavAction.FOLDER_EXPLORER)} />
-      <IconButton src="/icons/search.png" size="medium" alt=""
-        isSelected={navController.isSelected(NavAction.SEARCH_EXPLORER)}
-        onClick={() => navController.dispatch(NavAction.SEARCH_EXPLORER)} />
-    </div>
-    <div id="navbar_user">
-      <IconButton src="/icons/settings.png" size="medium" alt=""
-        isSelected={navController.isSelected(NavAction.SETTINGS)}
-        onClick={() => navController.dispatch(NavAction.SETTINGS)} />
-      <IconButton src="/icons/user.png" size="medium" alt=""
-        isSelected={navController.isSelected(NavAction.USER)}
-        onClick={() => navController.dispatch(NavAction.USER)} />
-    </div>
-  </Stack>);
+  // Helper to render an icon button
+  const renderButton = ({ src, navOption, alt }) => (
+    <IconButton
+      src={src}
+      size="medium"
+      alt={alt || ""}
+      isSelected={navController.isSelected(navOption)}
+      disabled={navController.isDisabled(navOption)}
+      onClick={() => navController.dispatch(navOption)}
+    />
+  );
+
+  return (
+    <Stack id="navbar" direction="vertical" class={className}>
+
+      {/* File / Explorer Section */}
+      <div id="navbar_file">
+        {renderButton({ src: "/icons/menu.png", navOption: NavOption.MENU })}
+        {renderButton({ src: "/icons/folder.png", navOption: NavOption.FOLDER_EXPLORER })}
+        {renderButton({ src: "/icons/search.png", navOption: NavOption.SEARCH_EXPLORER })}
+        {renderButton({ src: "/icons/workspaces.png", navOption: NavOption.WORKSPACES })}
+      </div>
+
+      {/* User / Settings Section */}
+      <div id="navbar_user">
+        {renderButton({ src: "/icons/settings.png", navOption: NavOption.SETTINGS })}
+        {renderButton({ src: "/icons/user.png", navOption: NavOption.USER })}
+      </div>
+    </Stack>
+  );
 }

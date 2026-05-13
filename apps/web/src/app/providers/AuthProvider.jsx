@@ -1,33 +1,35 @@
+// AuthProvider.jsx
 import { createContext, useContext, useState } from "react";
 
-const AuthContext = createContext({
-  token: "",
-  user: null,
-  isLoggedIn: false,
-  logIn: () => { },
-  logOut: () => { }
-});
+const AuthContext = createContext(null);
 
-export function AuthProvider({ token = "", user = null, logIn = () => { }, logOut = () => { }, children }) {
+export function AuthProvider({ children }) {
   const [auth, setAuth] = useState({
-    token: token,
-    user: user,
-    isLoggedIn: token !== "",
-    logIn: logIn,
-    logOut: logOut,
+    token: "",
+    user: null,
+    isLoggedIn: false,
   });
 
-  const switchAuth = (token, user) => {
+  // logIn sets token and user
+  const logIn = ({ token, user }) => {
     setAuth({
-      ...auth,
-      token: token,
-      user: user,
-      isLoggedIn: token !== ""
+      token,
+      user,
+      isLoggedIn: true,
+    });
+  };
+
+  // logOut clears everything
+  const logOut = () => {
+    setAuth({
+      token: "",
+      user: null,
+      isLoggedIn: false,
     });
   };
 
   return (
-    <AuthContext.Provider value={{ auth, switchAuth }}>
+    <AuthContext.Provider value={{ auth, logIn, logOut }}>
       {children}
     </AuthContext.Provider>
   );
