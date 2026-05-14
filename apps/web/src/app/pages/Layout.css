@@ -1,0 +1,27 @@
+/* Full workspace layout */
+#workspace_layout {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  /* navbar + body */
+  width: 100%;
+  height: 100vh;
+  /* full viewport */
+  overflow: hidden;
+}
+
+/* Body: 2-column layout */
+#workspace_body {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  /* explorer + editor */
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Editor column */
+#editor {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}

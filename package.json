@@ -1,0 +1,15 @@
+{
+  "name": "quillcc",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev:web": "npm --workspace @quillcc/web run dev",
+    "dev:server": "npm --workspace @quillcc/server run dev",
+    "dev": "concurrently \"npm run dev:web\" \"npm run dev:server\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  }
+}

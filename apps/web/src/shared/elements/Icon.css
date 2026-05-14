@@ -1,0 +1,69 @@
+.icon {
+  display: grid;
+  place-items: center;
+
+  aspect-ratio: 1;
+}
+
+/* Make image behave nicely */
+.icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+
+  pointer-events: none;
+}
+
+/* Sizes */
+.icon--small {
+  width: 18px;
+  padding: 2px;
+}
+
+.icon--medium {
+  width: 28px;
+  padding: 2px;
+}
+
+/* State */
+.icon--selected {
+  background-color: var(--color-selected);
+}
+
+/* Button Behaviors */
+.icon_button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+  background: transparent;
+
+  padding: 4px;
+  border-radius: 6px;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.15s ease,
+    opacity 0.15s ease;
+}
+.icon_button:hover {
+  background-color: var(--color-hover);
+}
+.icon_button:active {
+  background-color: var(--color-selected);
+}
+
+.icon_button--disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.icon_button--disabled:hover {
+  background: transparent;
+}
+
+.icon_button--disabled:active {
+  background: transparent;
+}
