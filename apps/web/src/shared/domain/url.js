@@ -1,1 +1,1 @@
-export const SERVER_URL = "https://quillcc-srv.onrender.com:10000";
+export const SERVER_URL = "https://quillcc-srv.onrender.com";
