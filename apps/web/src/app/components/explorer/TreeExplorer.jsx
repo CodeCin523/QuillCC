@@ -18,9 +18,7 @@ export function TreeExplorer() {
   const navigate = useNavigate();
 
   const [directories, setDirectories] = useState([]);
-  console.log(directories);
   const [files, setFiles] = useState([]);
-  console.log(files);
 
   const [selected, setSelected] = useState(null);
   const handleSelect = (item, type) => {

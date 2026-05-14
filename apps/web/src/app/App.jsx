@@ -13,6 +13,7 @@ import { LogoutPage } from "./pages/LogoutPage.jsx";
 import { Layout } from "./pages/Layout.jsx"
 
 import "./App.css"
+import { WorkspaceProvider } from "./providers/WorkplaceProvider.jsx";
 
 // ---------------- Guest Router ----------------
 const guestRouter = createBrowserRouter([
@@ -43,6 +44,14 @@ const authRouter = createBrowserRouter([
     element: <Layout />,
     children: [
       {
+        path: "local",
+        element: <LocalWorkspace />,
+        children: [
+          { path: "files/:fileId" },
+          { path: "*" },
+        ],
+      },
+      {
         path: "remote/:workspaceId",
         element: <RemoteWorkspace />,
         children: [
@@ -71,7 +80,9 @@ function AppRouter() {
 export function App() {
   return (
     <AuthProvider>
+      <WorkspaceProvider>
       <AppRouter />
+      </WorkspaceProvider>
     </AuthProvider>
   );
 }

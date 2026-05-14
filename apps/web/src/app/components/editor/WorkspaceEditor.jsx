@@ -8,63 +8,90 @@ export function WorkspaceEditor() {
   const { fileId } = useParams();
   const { workspace } = useWorkspace();
 
+  // --- State ---
   const [file, setFile] = useState(null);
   const [content, setContent] = useState("");
-  const [loading, setLoading] = useState(true);
 
+  // --- Refs (source of truth for async + Monaco safety) ---
   const fileRef = useRef(null);
   const contentRef = useRef("");
+  const adapterRef = useRef(workspace.adapter);
 
-  // Keep refs in sync with state
-  useEffect(() => { fileRef.current = file; }, [file]);
-  useEffect(() => { contentRef.current = content; }, [content]);
+  // Keep adapter always up to date (IMPORTANT FIX)
+  useEffect(() => {
+    adapterRef.current = workspace.adapter;
+  }, [workspace.adapter]);
 
-  // Load file when fileId or adapter changes
+  // Sync file/content refs
+  useEffect(() => {
+    fileRef.current = file;
+  }, [file]);
+
+  useEffect(() => {
+    contentRef.current = content;
+  }, [content]);
+
+  // --- Load file when fileId or adapter changes ---
   useEffect(() => {
     if (!fileId || !workspace.adapter) return;
 
-    setLoading(true);
+    let cancelled = false;
 
     async function loadFile() {
       try {
         const f = await workspace.adapter.getFile(fileId);
+
+        if (cancelled) return;
+
         setFile(f);
         setContent(f?.content || "");
-        fileRef.current = f;      // update ref immediately
-        contentRef.current = f?.content || ""; // update ref immediately
+
+        fileRef.current = f;
+        contentRef.current = f?.content || "";
       } catch (err) {
         console.error("Error loading file:", err);
-      } finally {
-        setLoading(false);
       }
     }
 
     loadFile();
+
+    return () => {
+      cancelled = true;
+    };
   }, [fileId, workspace.adapter]);
 
-  // Handle editor content changes
+  // --- Editor change handler ---
   function handleChange(value) {
     const newValue = value ?? "";
     setContent(newValue);
-    contentRef.current = newValue; // update ref immediately
+    contentRef.current = newValue;
   }
 
-  // Save file
+  // --- Save file (NO CLONED CLOSURE BUG ANYMORE) ---
   async function saveFile() {
-    if (!fileRef.current || !workspace.adapter) return;
+    const adapter = adapterRef.current;
+    const currentFile = fileRef.current;
 
-    const updatedFile = { ...fileRef.current, content: contentRef.current };
+    if (!currentFile || !adapter) return;
+
+    const updatedFile = {
+      ...currentFile,
+      content: contentRef.current,
+    };
+
     try {
-      await workspace.adapter.saveFile(updatedFile);
-      setFile(updatedFile); // update state
-      fileRef.current = updatedFile; // keep ref in sync
+      await adapter.saveFile(updatedFile);
+
+      setFile(updatedFile);
+      fileRef.current = updatedFile;
+
       console.log("File saved!");
     } catch (err) {
       console.error("Error saving file:", err);
     }
   }
 
-  // Editor shortcut (Ctrl/Cmd + S)
+  // --- Monaco mount ---
   function handleEditorDidMount(editor, monaco) {
     editor.addCommand(
       monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS,
@@ -74,13 +101,16 @@ export function WorkspaceEditor() {
     );
   }
 
-  // Loading guards
-  if (!workspace.adapter) return <div>Loading workspace...</div>;
+  // --- UI ---
+  if (!workspace.adapter) {
+    return <div>Loading workspace...</div>;
+  }
 
   return (
     <div id="workspace_body" style={{ display: "flex", height: "100%" }}>
       {workspace.explorer === "folder" && <TreeExplorer />}
-      {/*!fileId*/false? <div>Select a file to start editing.</div> : <Editor
+
+      <Editor
         id="editor"
         height="100%"
         width="100%"
@@ -94,7 +124,7 @@ export function WorkspaceEditor() {
           readOnly: !file,
         }}
         onMount={handleEditorDidMount}
-      />}
+      />
     </div>
   );
 }
