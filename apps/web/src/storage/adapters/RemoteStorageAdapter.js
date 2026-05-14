@@ -1,9 +1,8 @@
-import { StorageAdapter } from "./StorageAdapter.js";
+import { StorageAdapter } from "../StorageAdapter.js";
 import { SERVER_URL } from "../../shared/domain/url.js";
-import {
-  createDirectory, assertDirectoryInput, assertDirectoryEntity,
-  createFile, assertFileInput, assertFileEntity
-} from "../utils/FileDirectoryUtils.js";
+import { createDirectory, assertDirectoryInput, assertDirectoryEntity } from "../domain/directory.js";
+import { createFile, assertFileInput, assertFileEntity } from "../domain/file.js";
+
 
 export class RemoteStorageAdapter extends StorageAdapter {
   constructor(token) {
