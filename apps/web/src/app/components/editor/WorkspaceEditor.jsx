@@ -40,8 +40,11 @@ export function WorkspaceEditor() {
   }
 
   async function saveFile() {
+    console.log("2");
+    console.log(fileRef.current);
+    console.log(workspace.adapter);
     if (!fileRef.current || !workspace.adapter) return;
-
+    console.log("001");
     const updatedFile = { ...fileRef.current, content: contentRef.current };
     try {
       await workspace.adapter.saveFile(updatedFile);
@@ -55,7 +58,7 @@ export function WorkspaceEditor() {
     // Ctrl/Cmd + S shortcut
     editor.addCommand(
       monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS,
-      () => saveFile()
+      () => { console.log("try-save"); saveFile() }
     );
   }
 

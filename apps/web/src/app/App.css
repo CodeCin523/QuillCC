@@ -53,7 +53,7 @@ body,
 
 @font-face {
   font-family: 'Cascadia Code';
-  src: url('./fonts/cascadia/CascadiaCode.ttf') format('truetype');
+  src: url('/fonts/cascadia/CascadiaCode.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
 }
