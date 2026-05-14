@@ -10,61 +10,80 @@ export function WorkspaceEditor() {
 
   const [file, setFile] = useState(null);
   const [content, setContent] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const fileRef = useRef(null);
   const contentRef = useRef("");
 
-  // Keep refs in sync
+  // Keep refs in sync with state
   useEffect(() => { fileRef.current = file; }, [file]);
   useEffect(() => { contentRef.current = content; }, [content]);
 
-  // Load file when fileId changes
+  // Load file when fileId or adapter changes
   useEffect(() => {
-    if (!fileId || !workspace.adapter) return; // guard adapter
+    if (!fileId || !workspace.adapter) return;
+
+    setLoading(true);
 
     async function loadFile() {
       try {
         const f = await workspace.adapter.getFile(fileId);
         setFile(f);
         setContent(f?.content || "");
+        fileRef.current = f;      // update ref immediately
+        contentRef.current = f?.content || ""; // update ref immediately
       } catch (err) {
         console.error("Error loading file:", err);
+      } finally {
+        setLoading(false);
       }
     }
 
     loadFile();
   }, [fileId, workspace.adapter]);
 
+  // Handle editor content changes
   function handleChange(value) {
-    setContent(value || "");
+    const newValue = value ?? "";
+    setContent(newValue);
+    contentRef.current = newValue; // update ref immediately
+    console.log(newValue);
+    console.log(contentRef.current);
   }
 
+  // Save file
   async function saveFile() {
-    console.log("2");
-    console.log(fileRef.current);
-    console.log(workspace.adapter);
     if (!fileRef.current || !workspace.adapter) return;
-    console.log("001");
+
     const updatedFile = { ...fileRef.current, content: contentRef.current };
     try {
       await workspace.adapter.saveFile(updatedFile);
+      setFile(updatedFile); // update state
+      fileRef.current = updatedFile; // keep ref in sync
       console.log("File saved!");
     } catch (err) {
       console.error("Error saving file:", err);
     }
   }
 
+  // Editor shortcut (Ctrl/Cmd + S)
   function handleEditorDidMount(editor, monaco) {
-    // Ctrl/Cmd + S shortcut
     editor.addCommand(
       monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS,
-      () => { console.log("try-save"); saveFile() }
+      () => {
+        saveFile();
+      }
     );
   }
 
+  // Loading guards
+  if (!workspace.adapter) return <div>Loading workspace...</div>;
+  if (!fileId) return <div>Select a file to start editing.</div>;
+  if (loading) return <div>Loading file...</div>;
+
   return (
-    <div id="workspace_body">
-      {workspace.explorer === "folder" ? <TreeExplorer /> : <div />}
+    <div id="workspace_body" style={{ display: "flex", height: "100%" }}>
+      {workspace.explorer === "folder" && <TreeExplorer />}
       <Editor
         id="editor"
         height="100%"
@@ -76,6 +95,7 @@ export function WorkspaceEditor() {
         options={{
           automaticLayout: true,
           minimap: { enabled: false },
+          readOnly: !file,
         }}
         onMount={handleEditorDidMount}
       />

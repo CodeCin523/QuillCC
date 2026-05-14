@@ -2,8 +2,8 @@
   "name": "@quillcc/server",
   "version": "1.0.0",
   "scripts": {
-    "dev": "nodemon index.js",
-    "start": "node index.js"
+    "dev": "nodemon server.js",
+    "start": "node server.js"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
