@@ -1,6 +1,8 @@
 import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./providers/AuthProvider.jsx";
 
+import "../shared/i18n.js";
+
 import { LocalWorkspace } from "./pages/LocalWorkspace.jsx";
 import { RemoteWorkspace } from "./pages/RemoteWorkspace.jsx";
 import { LoginPage } from "./pages/LoginPage.jsx";
