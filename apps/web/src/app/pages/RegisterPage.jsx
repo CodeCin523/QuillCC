@@ -5,6 +5,8 @@ import { useAuth } from "../providers/AuthProvider.jsx";
 import { apiRequest } from "../../shared/domain/api.js";
 import { useTranslation } from "react-i18next";
 
+import "./Page.css";
+
 export function RegisterPage() {
   const { t } = useTranslation();
   const [username, setUsername] = useState("");
@@ -31,11 +33,14 @@ export function RegisterPage() {
     }
   };
 
-  return (
-    <div>
-      <h1>{t("register")}</h1>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <form onSubmit={handleSubmit}>
+return (
+  <div className="page-center">
+    <div className="form-card">
+      <h1 className="form-title">{t("register")}</h1>
+
+      {error && <div className="form-error">{error}</div>}
+
+      <form className="form" onSubmit={handleSubmit}>
         <input
           type="text"
           placeholder={t("username")}
@@ -43,7 +48,7 @@ export function RegisterPage() {
           onChange={(e) => setUsername(e.target.value)}
           required
         />
-        <br />
+
         <input
           type="email"
           placeholder={t("email")}
@@ -51,7 +56,7 @@ export function RegisterPage() {
           onChange={(e) => setEmail(e.target.value)}
           required
         />
-        <br />
+
         <input
           type="password"
           placeholder={t("password")}
@@ -59,16 +64,19 @@ export function RegisterPage() {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <br />
+
         <input
           type="text"
           placeholder={t("logoUrl")}
           value={logo}
           onChange={(e) => setLogo(e.target.value)}
         />
-        <br />
-        <button type="submit">{t("submit")}</button>
+
+        <button type="submit">
+          {t("submit")}
+        </button>
       </form>
     </div>
-  );
+  </div>
+);
 }

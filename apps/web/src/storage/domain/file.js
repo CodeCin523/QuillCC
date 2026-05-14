@@ -27,6 +27,7 @@ export function assertFileInput(obj) {
     throw new Error("File.content must be a string");
   }
 
+  console.log(obj);
   if (obj.type !== undefined && typeof obj.type !== "string") {
     throw new Error("File.type must be a string");
   }

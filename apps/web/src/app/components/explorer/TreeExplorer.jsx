@@ -18,7 +18,9 @@ export function TreeExplorer() {
   const navigate = useNavigate();
 
   const [directories, setDirectories] = useState([]);
+  console.log(directories);
   const [files, setFiles] = useState([]);
+  console.log(files);
 
   const [selected, setSelected] = useState(null);
   const handleSelect = (item, type) => {
@@ -36,12 +38,14 @@ export function TreeExplorer() {
   };
 
   function handleOpenFile(file) {
+    const workspaceId = workspace.workspaceId || "default";
+
     const base =
       workspace.adapter.constructor.name === "LocalStorageAdapter"
-        ? "/local/files"
-        : "/remote/files";
+        ? "/local"
+        : `/remote/${workspaceId}`;
 
-    navigate(`${base}/${file._id}`);
+    navigate(`${base}/files/${file._id}`);
   }
 
   // --- Load Files ---

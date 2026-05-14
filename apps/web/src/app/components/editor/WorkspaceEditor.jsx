@@ -47,8 +47,6 @@ export function WorkspaceEditor() {
     const newValue = value ?? "";
     setContent(newValue);
     contentRef.current = newValue; // update ref immediately
-    console.log(newValue);
-    console.log(contentRef.current);
   }
 
   // Save file
@@ -78,13 +76,11 @@ export function WorkspaceEditor() {
 
   // Loading guards
   if (!workspace.adapter) return <div>Loading workspace...</div>;
-  if (!fileId) return <div>Select a file to start editing.</div>;
-  if (loading) return <div>Loading file...</div>;
 
   return (
     <div id="workspace_body" style={{ display: "flex", height: "100%" }}>
       {workspace.explorer === "folder" && <TreeExplorer />}
-      <Editor
+      {/*!fileId*/false? <div>Select a file to start editing.</div> : <Editor
         id="editor"
         height="100%"
         width="100%"
@@ -98,7 +94,7 @@ export function WorkspaceEditor() {
           readOnly: !file,
         }}
         onMount={handleEditorDidMount}
-      />
+      />}
     </div>
   );
 }

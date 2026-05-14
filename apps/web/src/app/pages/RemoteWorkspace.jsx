@@ -8,7 +8,7 @@ import { WorkspaceEditor } from "../components/editor/WorkspaceEditor.jsx";
 export function RemoteWorkspace() {
   const { auth } = useAuth();
   const { workspace, switchWorkspace } = useWorkspace();
-  const { workspaceId, fileId } = useParams();
+  const { workspaceId } = useParams();
 
   useEffect(() => {
     if (workspace.type !== "remote") {
@@ -21,5 +21,5 @@ export function RemoteWorkspace() {
     }
   }, [workspace.type, workspaceId, auth.token, workspace.explorer, switchWorkspace]);
 
-  return <WorkspaceEditor fileId={fileId} />;
+  return <WorkspaceEditor />;
 }

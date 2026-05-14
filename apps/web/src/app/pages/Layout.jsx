@@ -12,7 +12,7 @@ function WorkspaceLayout({ children }) {
   const { workspace, switchWorkspace } = useWorkspace();
   const navigate = useNavigate();
 
-  const [isInWorkspace, setIsInWorkspace] = useState(false);
+  const [isInWorkspace, setIsInWorkspace] = useState(true);
 
   let guestController = {
     isSelected: (navOption) => {
@@ -39,6 +39,7 @@ function WorkspaceLayout({ children }) {
     },
 
     dispatch: (navOption) => {
+      console.log(navOption);
       if (isInWorkspace) {
         switch (navOption) {
           case NavOption.FOLDER_EXPLORER:

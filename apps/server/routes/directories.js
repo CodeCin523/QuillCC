@@ -1,8 +1,11 @@
 const express = require('express');
 const router = express.Router({ mergeParams: true });
 const auth = require('../middleware/auth');
+const resolveWorkspace =
+  require("../middleware/resolveDefaultWorkspace");
 const {
   getTree,
+  listDirectories,
   createDirectory,
   getDirectory,
   updateDirectory,
@@ -11,10 +14,11 @@ const {
 
 router.use(auth);
 
-router.get('/tree', getTree);
-router.post('/', createDirectory);
-router.get('/:directoryId', getDirectory);
-router.patch('/:directoryId', updateDirectory);
-router.delete('/:directoryId', deleteDirectory);
+router.get('/', resolveWorkspace, listDirectories);
+router.get('/tree', resolveWorkspace, getTree);
+router.post('/', resolveWorkspace, createDirectory);
+router.get('/:directoryId', resolveWorkspace, getDirectory);
+router.patch('/:directoryId', resolveWorkspace, updateDirectory);
+router.delete('/:directoryId', resolveWorkspace, deleteDirectory);
 
 module.exports = router;

@@ -18,6 +18,20 @@ const buildTree = async (workspaceId, parentId = null) => {
   return tree;
 };
 
+const listDirectories = async (req, res) => {
+  try {
+    const directories = await Directory.find({
+      workspaceId: req.params.workspaceId,
+    });
+
+    res.json(directories);
+  } catch (err) {
+    res.status(500).json({
+      message: err.message,
+    });
+  }
+};
+
 // GET /tree
 const getTree = async (req, res) => {
   try {
@@ -63,7 +77,7 @@ const updateDirectory = async (req, res) => {
     const dir = await Directory.findByIdAndUpdate(
       req.params.directoryId,
       { name, parentId },
-      { new: true }
+      { returnDocument: "after" }
     );
     res.json(dir);
   } catch (err) {
@@ -85,6 +99,7 @@ const deleteDirectory = async (req, res) => {
 
 module.exports = {
   getTree,
+  listDirectories,
   createDirectory,
   getDirectory,
   updateDirectory,

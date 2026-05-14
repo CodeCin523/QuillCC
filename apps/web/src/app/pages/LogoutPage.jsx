@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../providers/AuthProvider.jsx";
 import { useTranslation } from "react-i18next";
 
+import "./Page.css";
+
 export function LogoutPage() {
   const { t } = useTranslation();
   const { logOut } = useAuth();
@@ -19,5 +21,13 @@ export function LogoutPage() {
     }
   }, []);
 
-  return <p>{t("loggingOut")}</p>;
+  return (
+  <div className="page-center">
+    <div className="form-card">
+      <p className="logout-text">
+        {t("loggingOut")}
+      </p>
+    </div>
+  </div>
+);
 }

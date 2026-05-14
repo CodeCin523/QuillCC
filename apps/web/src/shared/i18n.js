@@ -20,7 +20,8 @@ const resources = {
       logoutConfirmation: "Are you sure you want to log out?",
       yes: "Yes",
       no: "No",
-      successfully: "successfully"
+      successfully: "successfully",
+      noAccount: "Don't have an account?"
     },
   },
   fr: {
@@ -39,7 +40,8 @@ const resources = {
       logoutConfirmation: "Êtes-vous sûr de vouloir vous déconnecter ?",
       yes: "Oui",
       no: "Non",
-      successfully: "avec succès"
+      successfully: "avec succès",
+      noAccount: "Vous n'avez pas de compte?"
     },
   },
 };

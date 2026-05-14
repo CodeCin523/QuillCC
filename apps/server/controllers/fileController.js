@@ -1,5 +1,20 @@
 const File = require('../models/File');
 
+// GET /api/workspaces/:workspaceId/files
+const listFiles = async (req, res) => {
+  try {
+    const files = await File.find({
+      workspaceId: req.params.workspaceId,
+    });
+
+    res.json(files);
+  } catch (err) {
+    res.status(500).json({
+      message: err.message,
+    });
+  }
+};
+
 // POST /api/workspaces/:workspaceId/files
 const createFile = async (req, res) => {
   const { name, parentId, content, type } = req.body;
@@ -37,7 +52,7 @@ const updateFile = async (req, res) => {
     const file = await File.findByIdAndUpdate(
       req.params.fileId,
       { name, content, parentId, type },
-      { new: true }
+      { returnDocument: "after" }
     );
     res.json(file);
   } catch (err) {
@@ -55,4 +70,10 @@ const deleteFile = async (req, res) => {
   }
 };
 
-module.exports = { createFile, getFile, updateFile, deleteFile };
+module.exports = {
+  listFiles,
+  createFile,
+  getFile,
+  updateFile,
+  deleteFile,
+};

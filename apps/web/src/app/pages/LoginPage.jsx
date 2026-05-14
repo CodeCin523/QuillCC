@@ -4,6 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../providers/AuthProvider.jsx";
 import { apiRequest } from "../../shared/domain/api.js";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
+
+import "./Page.css";
 
 export function LoginPage() {
   const { t } = useTranslation();
@@ -29,11 +32,14 @@ export function LoginPage() {
     }
   };
 
-  return (
-    <div>
-      <h1>{t("login")}</h1>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <form onSubmit={handleSubmit}>
+return (
+  <div className="page-center">
+    <div className="form-card">
+      <h1 className="form-title">{t("login")}</h1>
+
+      {error && <div className="form-error">{error}</div>}
+
+      <form className="form" onSubmit={handleSubmit}>
         <input
           type="email"
           placeholder={t("email")}
@@ -41,7 +47,7 @@ export function LoginPage() {
           onChange={(e) => setEmail(e.target.value)}
           required
         />
-        <br />
+
         <input
           type="password"
           placeholder={t("password")}
@@ -49,9 +55,18 @@ export function LoginPage() {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <br />
-        <button type="submit">{t("submit")}</button>
+
+        <button type="submit">
+          {t("submit")}
+        </button>
       </form>
+      <p className="form-footer">
+        {t("noAccount")}{" "}
+        <Link to="/register" className="form-link">
+          {t("register")}
+        </Link>
+      </p>
     </div>
-  );
+  </div>
+);
 }

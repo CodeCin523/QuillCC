@@ -4,6 +4,7 @@ const WorkspaceContext = createContext({
   type: "",
   explorer: "folder",
   adapter: null,
+  workspaceId: "default",
 });
 
 export function WorkspaceProvider({ type = "", explorer = "folder", adapter = null, children }) {
@@ -13,11 +14,12 @@ export function WorkspaceProvider({ type = "", explorer = "folder", adapter = nu
     adapter: adapter
   });
 
-  const switchWorkspace = ({ type, explorer, adapter }) => {
+  const switchWorkspace = ({ type, explorer, adapter, workspaceId }) => {
     setWorkspace({
       type: type,
       explorer: explorer,
-      adapter: adapter
+      adapter: adapter,
+      workspaceId,
     });
   };
 

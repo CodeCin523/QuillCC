@@ -46,8 +46,8 @@ const authRouter = createBrowserRouter([
         path: "remote/:workspaceId",
         element: <RemoteWorkspace />,
         children: [
-          { path: "files/:fileId", element: <RemoteWorkspace /> },
-          { path: "*", element: <div>Remote Not Found</div> },
+          { path: "files/:fileId" },
+          { path: "*" },
         ],
       },
       { path: "settings", element: <SettingsPage /> },

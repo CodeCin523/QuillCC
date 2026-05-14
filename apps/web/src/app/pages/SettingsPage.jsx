@@ -4,6 +4,8 @@ import { useAuth } from "../providers/AuthProvider.jsx";
 import { apiRequest } from "../../shared/domain/api.js";
 import { useTranslation } from "react-i18next";
 
+import "./Page.css";
+
 export function SettingsPage() {
   const { t } = useTranslation();
   const { auth, logIn } = useAuth();
@@ -30,35 +32,46 @@ export function SettingsPage() {
     }
   };
 
-  return (
-    <div>
-      <h1>{t("settings")}</h1>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      {success && <p style={{ color: "green" }}>{success}</p>}
-      <form onSubmit={handleSubmit}>
+return (
+  <div className="page-center">
+    <div className="form-card">
+      <h1 className="form-title">{t("settings")}</h1>
+
+      {error && <div className="form-error">{error}</div>}
+
+      {success && (
+        <div className="form-success">
+          {success}
+        </div>
+      )}
+
+      <form className="form" onSubmit={handleSubmit}>
         <input
           type="text"
           placeholder={t("username")}
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
-        <br />
+
         <input
           type="email"
           placeholder={t("email")}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-        <br />
+
         <input
           type="text"
           placeholder={t("logoUrl")}
           value={logo}
           onChange={(e) => setLogo(e.target.value)}
         />
-        <br />
-        <button type="submit">{t("update")}</button>
+
+        <button type="submit">
+          {t("update")}
+        </button>
       </form>
     </div>
-  );
+  </div>
+);
 }
