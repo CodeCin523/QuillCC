@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-import { apiRequest } from "../shared/domain/api.js";
-import { useAuth } from "../app/providers/AuthProvider";
+import { apiRequest } from "../../shared/domain/api.js";
+import { useAuth } from "../providers/AuthProvider";
 
 import "./WorkspaceSelectPage.css";
 
