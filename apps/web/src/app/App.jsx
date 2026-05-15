@@ -14,6 +14,7 @@ import { Layout } from "./pages/Layout.jsx"
 
 import "./App.css"
 import { WorkspaceProvider } from "./providers/WorkplaceProvider.jsx";
+import { WorkspaceSelectPage } from "./pages/WorkspaceSelectPage.jsx";
 
 // ---------------- Guest Router ----------------
 const guestRouter = createBrowserRouter([
@@ -59,6 +60,7 @@ const authRouter = createBrowserRouter([
           { path: "*" },
         ],
       },
+      { path: "workspaces", element: <WorkspaceSelectPage /> },
       { path: "settings", element: <SettingsPage /> },
       { path: "logout", element: <LogoutPage /> },
       { path: "*", element: <Navigate to="/remote/default" replace /> },
@@ -81,7 +83,7 @@ export function App() {
   return (
     <AuthProvider>
       <WorkspaceProvider>
-      <AppRouter />
+        <AppRouter />
       </WorkspaceProvider>
     </AuthProvider>
   );
