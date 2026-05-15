@@ -1,4 +1,5 @@
 const Workspace = require("../models/Workspace");
+const createDefaultWorkspace = require('../utils/ensureUserWorkspace');
 
 async function resolveDefaultWorkspace(
   req,
@@ -23,16 +24,14 @@ async function resolveDefaultWorkspace(
     }
 
     // Find oldest workspace
-    const workspace = await Workspace.findOne({
+    let workspace = await Workspace.findOne({
       ownerId: userId,
     }).sort({
       createdAt: 1,
     });
 
     if (!workspace) {
-      return res.status(404).json({
-        message: "No workspace found",
-      });
+      workspace = await createDefaultWorkspace(userId);
     }
 
     // Replace param
