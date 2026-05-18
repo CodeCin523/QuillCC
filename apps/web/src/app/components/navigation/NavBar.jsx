@@ -1,3 +1,12 @@
+import { IconButton } from "../../../shared/elements/IconButton.jsx";
+import { Stack } from "../../../shared/elements/Stack.jsx";
+import { NavOption } from "../../domain/NavOption.js";
+import { useAuth } from "../../providers/AuthProvider.jsx";
+import { useWorkspace } from "../../providers/WorkplaceProvider.jsx";
+import { useNavigate, useLocation } from "react-router-dom";
+
+import "./NavBar.css";
+
 export function NavBar({ className }) {
   const { auth } = useAuth();
   const { workspace, switchWorkspace } = useWorkspace();
