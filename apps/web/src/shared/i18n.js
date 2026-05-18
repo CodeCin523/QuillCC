@@ -21,7 +21,12 @@ const resources = {
       yes: "Yes",
       no: "No",
       successfully: "successfully",
-      noAccount: "Don't have an account?"
+      noAccount: "Don't have an account?",
+      fileSaved: "File saved successfully!",
+      fileSaveError: "Error saving file!",
+      fileSaved: "File saved successfully!",
+      fileSaveError: "Error saving file!",
+      loadingWorkspace: "Loading workspace...",
     },
   },
   fr: {
@@ -41,7 +46,12 @@ const resources = {
       yes: "Oui",
       no: "Non",
       successfully: "avec succès",
-      noAccount: "Vous n'avez pas de compte?"
+      noAccount: "Vous n'avez pas de compte?",
+      fileSaved: "Fichier enregistré avec succès !",
+      fileSaveError: "Erreur lors de l'enregistrement du fichier !",
+      fileSaved: "Fichier enregistré avec succès !",
+      fileSaveError: "Erreur lors de l'enregistrement du fichier !",
+      loadingWorkspace: "Chargement de l'espace de travail...",
     },
   },
 };
