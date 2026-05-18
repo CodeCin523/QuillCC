@@ -165,7 +165,6 @@ export class RemoteStorageAdapter extends StorageAdapter {
     await this.ensureReady();
 
     assertFileInput(fileInput);
-    console.log(fileInput);
 
     const data = await this.request(
       `/api/workspaces/default/files`,

@@ -1,53 +1,47 @@
 import { useState, useRef, useEffect } from "react";
 import Editor from "@monaco-editor/react";
 import { TreeExplorer } from "../explorer/TreeExplorer";
-import { useWorkspace } from "../../providers/WorkplaceProvider";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-export function WorkspaceEditor() {
+export function WorkspaceEditor({ adapter, workspace }) { // <-- pass adapter as prop
   const { t } = useTranslation();
   const { fileId } = useParams();
-  const { workspace } = useWorkspace();
 
-  // --- State ---
   const [file, setFile] = useState(null);
   const [content, setContent] = useState("");
-  const [saveMessage, setSaveMessage] = useState(""); // NEW: message state
+  const [saveMessage, setSaveMessage] = useState("");
 
-  // --- Refs ---
   const fileRef = useRef(null);
   const contentRef = useRef("");
-  const adapterRef = useRef(workspace.adapter);
-
-  useEffect(() => {
-    adapterRef.current = workspace.adapter;
-  }, [workspace.adapter]);
 
   useEffect(() => { fileRef.current = file; }, [file]);
   useEffect(() => { contentRef.current = content; }, [content]);
 
-  useEffect(() => {
-    if (!fileId || !workspace.adapter) return;
-    let cancelled = false;
+  // --- Load file ---
+useEffect(() => {
+  if (!fileId) return;
+  if (!adapter) return; // wait for adapter
 
-    async function loadFile() {
-      try {
-        const f = await workspace.adapter.getFile(fileId);
-        if (cancelled) return;
+  let cancelled = false;
 
-        setFile(f);
-        setContent(f?.content || "");
-        fileRef.current = f;
-        contentRef.current = f?.content || "";
-      } catch (err) {
-        console.error("Error loading file:", err);
-      }
+  const loadFile = async () => {
+    try {
+      const f = await adapter.getFile(fileId);
+      if (cancelled) return;
+      setFile(f);
+      setContent(f?.content || "");
+      fileRef.current = f;
+      contentRef.current = f?.content || "";
+    } catch (err) {
+      console.error("Error loading file:", err);
     }
+  };
 
-    loadFile();
-    return () => { cancelled = true; };
-  }, [fileId, workspace.adapter]);
+  loadFile();
+
+  return () => { cancelled = true; };
+}, [fileId, adapter]);
 
   function handleChange(value) {
     const newValue = value ?? "";
@@ -55,9 +49,7 @@ export function WorkspaceEditor() {
     contentRef.current = newValue;
   }
 
-  // --- Save file with message ---
   async function saveFile() {
-    const adapter = adapterRef.current;
     const currentFile = fileRef.current;
     if (!currentFile || !adapter) return;
 
@@ -66,62 +58,64 @@ export function WorkspaceEditor() {
     try {
       await adapter.saveFile(updatedFile);
 
-      setFile(updatedFile);
+      // Update ref and state for rendering
       fileRef.current = updatedFile;
+      setFile(updatedFile);
 
-      setSaveMessage(t("fileSaved")); // <-- translated message
-      setTimeout(() => setSaveMessage(""), 2000);
+      // Show the save message
+      setSaveMessage(t("fileSaved") || "File saved!");
+
+      // Hide after 2 seconds
+      setTimeout(() => {
+        // Important: wrap in a function, not arrow in setState
+        setSaveMessage(""); 
+      }, 2000);
     } catch (err) {
       console.error("Error saving file:", err);
-      setSaveMessage(t("fileSaveError")); // <-- translated message
+      setSaveMessage(t("fileSaveError") || "Save failed!");
       setTimeout(() => setSaveMessage(""), 2000);
     }
   }
 
-  function handleEditorDidMount(editor, monaco) {
+  const handleEditorDidMount = (editor, monaco) => {
     editor.addCommand(
       monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS,
-      () => {
-        saveFile();
-      }
+      () => saveFile()
     );
-  }
-
-  if (!workspace.adapter) {
-    return <div>{t("loadingWorkspace")}</div>;
-  }
+  };
 
   return (
-    <div id="workspace_body" style={{ display: "flex", height: "100%", position: "relative" }}>
-      {workspace.explorer === "folder" && <TreeExplorer />}
+    <div style={{ display: "flex", height: "100%", position: "relative" }}>
+  {workspace.explorer === "folder" && <TreeExplorer adapter={adapter} workspace={workspace} />}
 
-      <Editor
-        id="editor"
-        height="100%"
-        width="100%"
-        language="markdown"
-        theme="vs-dark"
-        value={content}
-        onChange={handleChange}
-        options={{ automaticLayout: true, minimap: { enabled: false }, readOnly: !file }}
-        onMount={handleEditorDidMount}
-      />
+  <div style={{ flex: 1, position: "relative" }}>
+    <Editor
+      height="100%"
+      width="100%"
+      language="markdown"
+      theme="vs-dark"
+      value={content}
+      onChange={handleChange}
+      options={{ automaticLayout: true, minimap: { enabled: false }, readOnly: !file }}
+      onMount={handleEditorDidMount}
+    />
 
-      {/* --- Save message UI --- */}
-      {saveMessage && (
-        <div style={{
-          position: "absolute",
-          bottom: 20,
-          right: 20,
-          padding: "8px 16px",
-          backgroundColor: "#4caf50",
-          color: "white",
-          borderRadius: 4,
-          boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
-        }}>
-          {saveMessage}
-        </div>
-      )}
-    </div>
+    {saveMessage && (
+      <div style={{
+        position: "absolute",
+        bottom: 20,
+        right: 20,
+        padding: "8px 16px",
+        backgroundColor: "#4caf50",
+        color: "white",
+        borderRadius: 4,
+        boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
+        zIndex: 1000 // << make sure it's above the editor
+      }}>
+        {saveMessage}
+      </div>
+    )}
+  </div>
+</div>
   );
 }
