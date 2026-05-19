@@ -18,6 +18,12 @@ export function NavBar({ className }) {
       ? auth.user.logo
       : "/icons/user.png";
 
+  const isRemoteWorkspace = workspace?.type === "remote";
+
+  const workspaceBasePath = isRemoteWorkspace
+    ? `/remote/${workspace.workspaceId}`
+    : "/local";
+
   return (
     <Stack id="navbar" direction="vertical" class={className}>
       {/* File / Explorer Section */}
@@ -37,12 +43,13 @@ export function NavBar({ className }) {
           alt="Folder Explorer"
           isSelected={
             location.pathname.startsWith("/local") ||
+            location.pathname.startsWith("/remote") ||
             location.pathname.includes("/files")
           }
           isDisabled={false}
           onClick={() => {
             switchWorkspace({ ...workspace, explorer: "folder" });
-            navigate("/local");
+            navigate(workspaceBasePath);
           }}
         />
 
@@ -54,7 +61,7 @@ export function NavBar({ className }) {
           isDisabled={false}
           onClick={() => {
             switchWorkspace({ ...workspace, explorer: "search" });
-            navigate("/local");
+            navigate(workspaceBasePath);
           }}
         />
 
@@ -63,7 +70,7 @@ export function NavBar({ className }) {
           size="medium"
           alt="Workspaces"
           isSelected={false}
-          isDisabled={!auth.isLoggedIn} // isDisabled if not logged in
+          isDisabled={!auth.isLoggedIn}
           onClick={() => navigate(auth.isLoggedIn ? "/workspaces" : "/login")}
         />
       </div>
@@ -75,7 +82,7 @@ export function NavBar({ className }) {
           size="medium"
           alt="Settings"
           isSelected={location.pathname === "/settings"}
-          isDisabled={!auth.isLoggedIn} // isDisabled if not logged in
+          isDisabled={!auth.isLoggedIn}
           onClick={() => navigate("/settings")}
         />
 
@@ -84,7 +91,7 @@ export function NavBar({ className }) {
           size="medium"
           alt={auth.user?.username || "User"}
           isSelected={location.pathname === "/login"}
-          isDisabled={false} // user login/logout is always clickable
+          isDisabled={false}
           onClick={() =>
             navigate(auth.isLoggedIn ? "/logout" : "/login")
           }

@@ -7,7 +7,7 @@ import { useAuth } from "../providers/AuthProvider";
 import "./WorkspaceSelectPage.css";
 
 export function WorkspaceSelectPage() {
-  const { token } = useAuth();
+  const { auth } = useAuth();
 
   const [workspaces, setWorkspaces] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -17,7 +17,7 @@ export function WorkspaceSelectPage() {
     async function loadWorkspaces() {
       try {
         const data = await apiRequest("/api/workspaces", {
-          token,
+          token: auth.token,
         });
 
         setWorkspaces(data);
@@ -29,7 +29,7 @@ export function WorkspaceSelectPage() {
     }
 
     loadWorkspaces();
-  }, [token]);
+  }, [auth]);
 
   return (
     <div className="page-center">
