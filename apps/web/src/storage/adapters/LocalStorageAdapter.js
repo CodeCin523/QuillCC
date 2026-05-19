@@ -101,31 +101,36 @@ export class LocalStorageAdapter extends StorageAdapter {
 
   async deleteDirectory(id) {
     const dirs = this._getDirectories();
-    const files = this._getFiles();
 
     if (!dirs[id]) {
       throw new Error(`Directory with id ${id} does not exist`);
     }
 
-    // --- Delete child directories recursively ---
-    for (const dir of Object.values(dirs)) {
-      if (dir.parentId === id) {
-        await this.deleteDirectory(dir._id);
-      }
+    // collect child directories first
+    const childDirs = Object.values(dirs)
+      .filter((dir) => dir.parentId === id);
+
+    // recursively delete children
+    for (const child of childDirs) {
+      await this.deleteDirectory(child._id);
     }
 
-    // --- Delete child files ---
+    // refresh state AFTER recursion
+    const updatedDirs = this._getDirectories();
+    const files = this._getFiles();
+
+    // delete files belonging to this directory
     for (const file of Object.values(files)) {
       if (file.parentId === id) {
         delete files[file._id];
       }
     }
 
-    // --- Delete this directory ---
-    delete dirs[id];
+    // delete this directory
+    delete updatedDirs[id];
 
     this._write(KEYS.FILES, files);
-    this._write(KEYS.DIRECTORIES, dirs);
+    this._write(KEYS.DIRECTORIES, updatedDirs);
 
     return true;
   }
